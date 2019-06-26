@@ -13,12 +13,20 @@ defmodule HelloWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/" do
+    forward "/jobs", BackgroundJob.Plug
+  end
+
   scope "/", HelloWeb do
     pipe_through :browser
 
     get "/", PageController, :index
     get "/hello", HelloController, :index
     get "/hello/:messenger", HelloController, :show
+
+    resources "/users", UserController
+    resources "/posts", PostController, only: [:index, :show]
+    resources "/comments", CommentsController, except: [:delete]
   end
 
   # Other scopes may use custom stacks.
